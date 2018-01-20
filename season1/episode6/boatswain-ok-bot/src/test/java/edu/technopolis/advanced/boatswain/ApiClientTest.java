@@ -14,7 +14,7 @@ import edu.technopolis.advanced.boatswain.request.SendMessageRequest;
 import edu.technopolis.advanced.boatswain.request.SendRecipient;
 import edu.technopolis.advanced.boatswain.request.SubscribePayload;
 import edu.technopolis.advanced.boatswain.request.SubscribeRequest;
-import edu.technopolis.advanced.boatswain.response.CurrencyResponse;
+//import edu.technopolis.advanced.boatswain.response.CurrencyResponse;
 import edu.technopolis.advanced.boatswain.response.GetSubscriptionsResponse;
 import edu.technopolis.advanced.boatswain.response.SendMessageResponse;
 import edu.technopolis.advanced.boatswain.response.SubscribeResponse;
@@ -26,7 +26,7 @@ public class ApiClientTest {
     @BeforeClass
     public static void createClient() throws IOException {
         client = new ApiClient("https", "api.ok.ru",
-                "access_token=tkn1QkblURYK61ihvr5c9Q7YnpfWbu6htbhjP9QmkeuT9hcwrrvjIhousxsjNVK11WRUq1:CBAJEOPLEBABABABA");
+                "access_token=tkn1gCe57xCpYpPwECRRMaNyn2AXkX8e4zVqFR7kOuOaa8RrTpv1RwwIJdvO79b8rNRC3:CBAQKMOLEBABABABA");
     }
 
     @Test
@@ -48,22 +48,22 @@ public class ApiClientTest {
 
     @Test
     public void testPostMessage() throws Exception {
-        SendMessageRequest req = new SendMessageRequest("/graph/me/messages", "chat:C3e7a6b21f900");
+        SendMessageRequest req = new SendMessageRequest("/graph/me/messages", "chat:C3e1517de8a00");
         Message message = new Message();
         message.setText("text");
-        SendMessagePayload payload = new SendMessagePayload(new SendRecipient("user:541569460261"), message);
+        SendMessagePayload payload = new SendMessagePayload(new SendRecipient("user:576934145722"), message);
         req.setPayload(payload);
         SendMessageResponse status = client.post(req, SendMessageResponse.class);
         TestCase.assertNotNull(status);
     }
-
+/*
     @Test
     public void testCurrency() throws IOException {
         ApiClient currencyClient = new ApiClient("http", "api.fixer.io", null);
         CurrencyResponse usd = currencyClient.get(new CurrencyRequest("USD"), CurrencyResponse.class);
         Assert.assertNotNull(usd.getRates());
         Assert.assertNotNull(usd.getRates().get("RUB"));
-    }
+    }*/
 
     @AfterClass
     public static void closeClient() throws IOException {

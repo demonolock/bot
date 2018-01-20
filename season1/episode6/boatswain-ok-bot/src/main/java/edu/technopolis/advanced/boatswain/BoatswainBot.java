@@ -80,7 +80,7 @@ public class BoatswainBot {
 
     private static void subscribe(ApiClient client, Properties props, String botEndpoint) throws IOException {
         SubscribeRequest req = new SubscribeRequest(props.getProperty("ok.api.endpoint.subscribe"),
-                new SubscribePayload(botEndpoint, props.getProperty("bot.phrase")));
+                new SubscribePayload(botEndpoint, ""));
         SubscribeResponse post = client.post(req, SubscribeResponse.class);
         if (!post.isSuccess()) {
             throw new IllegalStateException("Failed to subscribe bot to messages");
@@ -123,35 +123,35 @@ public class BoatswainBot {
     private static class MessageSender {
 
         private final ApiClient client;
-        private final String phrase;
-        private final String joke;
         private final String sendEndpoint;
 
         MessageSender(ApiClient okClient, Properties props) {
             this.client = okClient;
-            this.phrase = props.getProperty("bot.phrase");
-            this.joke = props.getProperty("bot.joke");
             this.sendEndpoint = props.getProperty("ok.api.endpoint.send");
         }
 
         boolean send(MessageNotification notif) {
+            log.info("qwe");
+            MessageHandler handler = new MessageHandler();
+            handler.setToken(notif.getRecipient().getChatId(), notif.getSender().getUserId());
+            String msg = handler.onUpdateReceived(notif.getMessage().getText(), notif.getRecipient().getChatId(), notif.getSender().getName());
             if (notif == null || notif.getMessage() == null || notif.getMessage().getText() == null) {
                 log.info("Message notification contains no text <{}>", notif);
                 return true;
             }
-            if (!notif.getMessage().getText().startsWith(phrase)) {
+            /*if (!notif.getMessage().getText().startsWith("ITS QWE")) {
                 log.info("Message notification does not contain phrase <{}>", notif);
                 return true;
             }
             if (notif.getRecipient() == null || notif.getRecipient().getChatId() == null) {
                 log.warn("Message notification does not contain chat id <{}>", notif);
                 return false;
-            }
+            }*/
             SendMessageRequest req = new SendMessageRequest(sendEndpoint, notif.getRecipient().getChatId())
                     .setPayload(
                             new SendMessagePayload(
                                     new SendRecipient(notif.getSender().getUserId()),
-                                    new Message(joke)
+                                    new Message(msg)
                             )
                     );
             try {
@@ -162,5 +162,7 @@ public class BoatswainBot {
             }
         }
     }
+
+
 
 }
