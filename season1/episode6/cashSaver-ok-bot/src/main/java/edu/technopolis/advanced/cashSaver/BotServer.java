@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
 import edu.technopolis.advanced.cashSaver.incoming.request.MessageNotification;
-import edu.technopolis.advanced.cashSaver.request.SendMessageRequest;
 
 class BotServer {
     private static final Logger log = LoggerFactory.getLogger(BotServer.class);

@@ -6,24 +6,23 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class MessageHandler {
+final class MessageHandler {
 
-    String token;
+    private String token;
 
-    static String hashAccount = null;
+    private static String hashAccount = null;
     private static final String botName = "@Cash_Saverbot";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(MessageHandler.class);
-    private static String accountBasePath = "accountBase";
 
-    private static Map<String, List<Transaction>> accountBase = new HashMap<>();
-    private static Transaction transaction = new Transaction();
+    private Map<String, List<Transaction>> accountBase = new HashMap<>();
+    private Transaction transaction = new Transaction();
     private static List<Transaction> base = new ArrayList<>();
 
 
-    String reTransaction = "^((\\D))+[ ]*[-|+]{1}[1-9](\\d)*$";
-    Pattern tr = Pattern.compile(reTransaction);
+    private String reTransaction = "^((\\D))+[ ]*[-|+]{1}[1-9](\\d)*$";
+    private Pattern tr = Pattern.compile(reTransaction);
 
-    public String getBotUsername() {
+    private String getBotUsername() {
         return botName;
     }
 
@@ -34,7 +33,7 @@ public class MessageHandler {
         base = accountBase.get(token);
     }
 
-    public void setToken(String chatId, String userId) {
+    void setToken(String chatId, String userId) {
         try {
             token = "token" + String.valueOf(String.valueOf(chatId + getBotUsername()
                     + userId).hashCode());
@@ -43,14 +42,14 @@ public class MessageHandler {
         }
     }
 
-    private String getAccount() throws IOException {
-        hashAccount = accountBasePath+ File.separator + token +".csa";
+    private void getAccount() throws IOException {
+        String accountBasePath = "accountBase";
+        hashAccount = accountBasePath + File.separator + token +".csa";
         File accFile = new File(hashAccount);
         accFile.createNewFile();
-        return hashAccount;
     }
 
-    public String onUpdateReceived(String txt, String chatId, String name) {
+    String onUpdateReceived(String txt, String chatId, String name) {
         try {
             getAccount();
         } catch (IOException e1) {
@@ -109,12 +108,12 @@ public class MessageHandler {
                     log.error("Невозможно извлечь данные");
                     e.printStackTrace();
                 }
-                String out = "";
+                StringBuilder out = new StringBuilder();
                 for (Transaction aBase : base) {
-                    out += aBase.toString() + "\n";
+                    out.append(aBase.toString()).append("\n");
                 }
                 log.info("viewAll finished");
-                return out;
+                return out.toString();
             }
 
             case "/delete": {
@@ -144,9 +143,9 @@ public class MessageHandler {
                     }
                     int sum = 0;
                     txt = txt.replaceAll("/sortByGoal ", "");
-                    for (int i = 0; i < base.size(); i++) {
-                        if (base.get(i).getGoal().equals(txt)) {
-                            sum += base.get(i).getAmount();
+                    for (Transaction aBase : base) {
+                        if (aBase.getGoal().equals(txt)) {
+                            sum += aBase.getAmount();
                         }
                     }
                     log.info("sortByGoal finished");
@@ -159,7 +158,7 @@ public class MessageHandler {
 
                 else if (tr.matcher(txt).find()) {
                     int posSign,
-                        sum = 0,
+                        sum,
                         sign = 1;
                     Calendar date = Calendar.getInstance();
                     if (txt.lastIndexOf("+") > -1) {
@@ -189,12 +188,10 @@ public class MessageHandler {
                     base.add(transaction);
                     accountBase.put(token, base);
 
-                    try {
-                        FileOutputStream fos = new FileOutputStream(hashAccount);
-                        ObjectOutputStream serial = new ObjectOutputStream(fos);
-                        serial.writeObject(accountBase);
-                        serial.flush();
-                        serial.close();
+                    try (FileOutputStream fos = new FileOutputStream(hashAccount)) {
+                            ObjectOutputStream serial = new ObjectOutputStream(fos);
+                            serial.writeObject(accountBase);
+                            serial.flush();
                     } catch (Exception ex) {
                         log.warn("Ошибка при сериализации объекта");
                         return "Ошибка при сериализации объекта";

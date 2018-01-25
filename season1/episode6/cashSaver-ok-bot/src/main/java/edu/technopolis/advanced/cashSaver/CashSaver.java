@@ -135,7 +135,7 @@ public class CashSaver {
             MessageHandler handler = new MessageHandler();
             handler.setToken(notif.getRecipient().getChatId(), notif.getSender().getUserId());
             String msg = handler.onUpdateReceived(notif.getMessage().getText(), notif.getRecipient().getChatId(), notif.getSender().getName());
-            if (notif == null || notif.getMessage() == null || notif.getMessage().getText() == null) {
+            if (notif.getMessage() == null || notif.getMessage().getText() == null) {
                 log.info("Message notification contains no text <{}>", notif);
                 return true;
             }

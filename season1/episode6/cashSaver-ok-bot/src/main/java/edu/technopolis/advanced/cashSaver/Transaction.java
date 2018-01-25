@@ -1,34 +1,34 @@
 package edu.technopolis.advanced.cashSaver;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 public class Transaction implements Serializable{
 
     private String goal;
-    private Calendar date;
+    private SimpleDateFormat date;
     private Integer amount;
 
-    public Transaction() {
+    Transaction() {
     }
 
     public void setGoal(String goal) {
         this.goal = goal;
     }
 
-    public String getGoal(){
+    String getGoal(){
         return goal;
     }
 
-    public Calendar getDate() {
+    public SimpleDateFormat getDate() {
         return date;
     }
 
-    public void setDate(Calendar date) {
+    public void setDate(SimpleDateFormat date) {
         this.date = date;
     }
 
-    public Integer getAmount() {
+    Integer getAmount() {
         return amount;
     }
 
@@ -37,7 +37,7 @@ public class Transaction implements Serializable{
     }
 
 
-    public void setAll(String goal, Integer amount, Calendar date) {
+    void setAll(String goal, Integer amount, SimpleDateFormat date) {
         this.goal = goal;
         this.date = date;
         this.amount = amount;
@@ -46,14 +46,7 @@ public class Transaction implements Serializable{
 
     @Override
     public String toString(){
-
-        int year = this.date.get(this.date.YEAR);
-        int month = this.date.get(this.date.MONTH)+1;
-        int day = this.date.get(this.date.DAY_OF_MONTH);
-        int hour = this.date.get(this.date.HOUR);
-        int min = this.date.get(this.date.MINUTE);
-        int sec = this.date.get(this.date.SECOND);
-
-        return "дата: "+day+"."+month+"."+year+" - "+hour+":"+min+":"+sec+"  цель: "+this.goal+"  сумма: "+this.amount;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy G 'at' HH:mm:ss z");
+        return "дата: "+dateFormat+"  цель: "+this.goal+"  сумма: "+this.amount;
     }
 }
